@@ -1,7 +1,6 @@
 package com.convista.pwr.bc;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -20,6 +19,9 @@ public class PersonResource {
     @Autowired
     private StoreService storeService;
 
+    @Autowired
+    private WeatherService weatherService;
+
     private static final String PERSON_AGE_BY_FUNCTION_MESSAGE_FORMAT = "Person is {0} years old - calculated by function";
 
     @GetMapping(value = "/person-age-function")
@@ -37,6 +39,20 @@ public class PersonResource {
         Beer beer = storeService.buyBeerForClient(person);
 
         return beer.toString();
+    }
+
+    @GetMapping(value = "/person/buy-tea")
+    @ResponseBody
+    public String buyTea() {
+        int celsiusTemperature = weatherService.readCurrentTemperature();
+        Tea tea;
+        if (celsiusTemperature > 20) {
+            tea = storeService.buyTea(TeaType.ICE);
+        } else {
+            tea = storeService.buyTea(TeaType.HOT);
+        }
+        
+        return tea.toString();
     }
 
 }

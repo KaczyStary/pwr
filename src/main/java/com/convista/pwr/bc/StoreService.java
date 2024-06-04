@@ -42,7 +42,12 @@ public class StoreService {
             throw new RuntimeException(BLIK_PAYMENT_ERROR_MESSAGE);
         }
 
+
+
         return new Beer(BEER_BRAND);
     }
 
+    public Tea buyTea(TeaType teaType) {
+        return new Tea(teaType);
+    }
 }
