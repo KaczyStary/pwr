@@ -44,14 +44,11 @@ public class PersonResource {
     @GetMapping(value = "/person/buy-tea")
     @ResponseBody
     public String buyTea() {
-        int celsiusTemperature = weatherService.readCurrentTemperature();
-        Tea tea;
-        if (celsiusTemperature > 20) {
-            tea = storeService.buyTea(TeaType.ICE);
-        } else {
-            tea = storeService.buyTea(TeaType.HOT);
-        }
-        
+        int temperatureForIceTea = 20;
+
+        Tea tea = storeService
+                .buyTea(weatherService.readCurrentTemperature() > temperatureForIceTea ? TeaType.ICE : TeaType.HOT);
+
         return tea.toString();
     }
 
