@@ -15,4 +15,8 @@ public class Person {
     public LocalDate getBirthDate() {
         return birthDate;
     }
+
+    public int calculateCurrentAge() {
+        return LocalDate.now().getYear() - birthDate.getYear();
+    }
 }
