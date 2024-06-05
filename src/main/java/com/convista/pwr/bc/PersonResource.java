@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 @RestController
 public class PersonResource {
@@ -21,6 +23,9 @@ public class PersonResource {
 
     @Autowired
     private WeatherService weatherService;
+
+    @Autowired
+    private PartyPlanner partyPlanner;
 
     private static final String PERSON_AGE_BY_FUNCTION_MESSAGE_FORMAT = "Person is {0} years old - calculated by function";
 
@@ -50,6 +55,26 @@ public class PersonResource {
                 .buyTea(weatherService.readCurrentTemperature() > temperatureForIceTea ? TeaType.ICE : TeaType.HOT);
 
         return tea.toString();
+    }
+
+    @GetMapping(value = "/person/prepare-party")
+    @ResponseBody
+    public String prepareParty() {
+
+        List<String> partyActions = new ArrayList<>();
+
+        storeService.buyPizza(partyActions);
+
+        return String.join("<br>", partyActions);
+    }
+
+    @GetMapping(value = "/person/plan-party")
+    @ResponseBody
+    public String planParty() {
+
+        List<String> partyPlan = partyPlanner.planParty();
+
+        return String.join("<br>", partyPlan);
     }
 
 }
