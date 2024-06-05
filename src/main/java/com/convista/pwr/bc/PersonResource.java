@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class PersonResource {
@@ -36,7 +37,6 @@ public class PersonResource {
 
         return MessageFormat.format(PERSON_AGE_BY_FUNCTION_MESSAGE_FORMAT, age);
     }
-
     @GetMapping(value = "/person/buy-beer")
     @ResponseBody
     public String buyBeer() {
@@ -45,7 +45,6 @@ public class PersonResource {
 
         return beer.toString();
     }
-
     @GetMapping(value = "/person/buy-tea")
     @ResponseBody
     public String buyTea() {
@@ -60,18 +59,27 @@ public class PersonResource {
     @GetMapping(value = "/person/prepare-party")
     @ResponseBody
     public String prepareParty() {
-
         List<String> partyActions = new ArrayList<>();
 
-        storeService.buyPizza(partyActions);
+        storeService.shoppingList(partyActions);
 
         return String.join("<br>", partyActions);
+    }
+
+    @GetMapping(value = "/party/participants")
+    @ResponseBody
+    public String listOfPartyParticipants(){
+        Optional<List<Person>> optionalPersonList = Optional.ofNullable(personRepository.partyParticipantList());
+        if (!optionalPersonList.isEmpty()){
+            List<Person> partyPersonList = optionalPersonList.get();
+            return String.join("<br>", partyPersonList.toString());
+        }
+        throw new IllegalArgumentException("List of party participants is empty");
     }
 
     @GetMapping(value = "/person/plan-party")
     @ResponseBody
     public String planParty() {
-
         List<String> partyPlan = partyPlanner.planParty();
 
         return String.join("<br>", partyPlan);
